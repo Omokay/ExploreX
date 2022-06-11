@@ -7,11 +7,9 @@ function httpGetLaunches(req, res) {
 
 function httpPostLaunch(req, res) {
     let launch = req.body;
-    console.log(req.body);
-
     let {launchDate, mission, rocket, target } = launch;
 
-    if (!launchDate.length || !mission.length || !rocket.length || !target.length) {
+    if ((launchDate && !launchDate.length) || (mission && !mission.length) || (rocket && !rocket.length) || (target && !target.length) || launchDate === undefined || target === undefined || mission === undefined || rocket === undefined) {
         return res.status(400).json({
             error: 'Missing some required launch properties',
         })
@@ -20,7 +18,7 @@ function httpPostLaunch(req, res) {
     launchDate = new Date(launchDate);
     if (launchDate.toString() === 'Invalid Date') {
         return res.status(400).json({
-            error: 'Invalid Launch Date',
+            error: 'Invalid launch date',
         })
     }
 
@@ -38,12 +36,12 @@ function httpAbortLaunch(req, res) {
         });
     }
 
-    const {upcoming} = req.body;
-    if (doesLaunchExists(launchId) && upcoming === false) {
-        res.status(400).json({
-            error: 'Launch has already been aborted',
-        })
-    }
+    // const {upcoming} = req.body;
+    // if (doesLaunchExists(launchId) && upcoming === false) {
+    //     res.status(400).json({
+    //         error: 'Launch has already been aborted',
+    //     })
+    // }
     const aborted = abortLaunchById(launchId);
     return res.status(200).json(aborted);
 }
